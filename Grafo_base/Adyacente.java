@@ -7,10 +7,11 @@ import java.util.Arrays;
  */
 public class Adyacente implements Grafo
 {
-    // Aca esta todo implementado de la lista de Adyacentes y los metodos de adyacente para realizar pruebas
+    // Aca esta todo implementado de la lista de Adyacentes
+    //y los metodos de adyacente para realizar pruebas
     private int nodo ;
     private double peso ;
-    ArrayList<Adyacente>[] lista;
+    ArrayList<Adyacente>[] lista; //aca no se usa lista , solo esta puesto por la 
     int nVertices;
     boolean dirigido;
 
@@ -20,8 +21,8 @@ public class Adyacente implements Grafo
         this.nodo=nodo;
     }
 
-    public String AdytoString(){
-        return "(" + nodo +"," + peso +")";
+    public String toString(){ //metodo exclusivo para ser usado en ListaAdyacente
+        return "(" + this.nodo +"," + this.peso +")";
     }
 
     public double getPeso(){
@@ -52,8 +53,14 @@ public class Adyacente implements Grafo
 
     public double getPesoArista(int origen, int destino){
         double pesoArista = 0.0; 
-        if(this.lista[origen] != null)
-            pesoArista = this.lista[origen].get(destino).getPeso();
+        for(int i = 0 ; i < lista.length ; i ++){
+            for(int j = 0 ; j < lista[i].size() ; j++){
+                if(!this.lista[origen].equals(null) && this.lista[origen].get(j).getNodo() == destino){
+                    pesoArista = this.lista[origen].get(destino).getPeso();
+                }
+            }
+        }
+
         return pesoArista;
     }
 
@@ -131,21 +138,21 @@ public class Adyacente implements Grafo
 
     //debe haber un vertice que se conecte a todos los demas
     public boolean esGrafoRueda(){
-        boolean es = true;
+        boolean esgrafoRueda = true;
         int count = 0;
         if(getNumAristas() == 2*(nVertices-1)){
-            for(int i = 0 ; i<nVertices && es ; i++){
+            for(int i = 0 ; i<nVertices && esgrafoRueda ; i++){
                 int gradoActual = getGradoVertice_positivo(i);
                 if(gradoActual!=3){
                     if(gradoActual == nVertices-1){
                         count++;
                     }else{
-                        es = false;
+                        esgrafoRueda = false;
                     }
                 }
             }
         }
-        return es && count==1;
+        return esgrafoRueda && count==1;
     }
 
     public boolean existeBucle(){      
@@ -161,15 +168,15 @@ public class Adyacente implements Grafo
     }
 
     public boolean existeCiclo(){
-        boolean es = true;
+        boolean existe = true;
         if(getNumAristas() == nVertices){
-            for(int i = 0 ; i<nVertices && es ; i++){
+            for(int i = 0 ; i<nVertices && existe ; i++){
                 if(getGradoVertice_positivo(i)!= 2){
-                    es = false;
+                    existe = false;
                 }
             }
         }
-        return es;
+        return existe;
     }
 
     //Metodos de la lista de adyacencia 
@@ -203,19 +210,8 @@ public class Adyacente implements Grafo
         return listaAdyacentes;
     }
 
-    public String toString(){
-        String grafo = "";
-        for(int i =0; i <this.lista.length; i++){
-            grafo += i+" ->";
-            for(Adyacente adyacente: this.lista[i]){
-                grafo += adyacente.toString();
-            }
-            grafo += "\n";
-        }
-        return grafo;
-    }
-
     public void dibujarGrafo(){
         System.out.println(this.lista.toString());
     }
+
 }
